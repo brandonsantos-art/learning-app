@@ -1,0 +1,43 @@
+name: CI
+
+# Runs the test suites on every push and pull request.
+# Deployments are gated by branch (see the "environment" notes in deploy).
+on:
+  push:
+    branches: [production, staging, development]
+  pull_request:
+    branches: [production, staging, development]
+
+jobs:
+  test:
+    name: Test (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Engine tests (subnet + network simulator)
+        run: node tests/engines.test.js
+      - name: Terminal / IOS / quiz / SRS tests
+        run: node tests/terminal.test.js
+      - name: View + data-integrity tests
+        run: node tests/views.test.js
+      - name: Lab solvability tests
+        run: node tests/labs-solve.test.js
+
+  # Example deploy gate: only runs on the production branch after tests pass.
+  # Fill in your host's deploy step (GitHub Pages, Netlify, Cloudflare Pages, etc.).
+  deploy-production:
+    name: Deploy (production)
+    needs: test
+    if: github.ref == 'refs/heads/production' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Placeholder deploy
+        run: echo "All tests passed on production. Add your deploy step here (it is a static site - publish the repo root)."

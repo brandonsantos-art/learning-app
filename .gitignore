@@ -1,0 +1,23 @@
+# Dependencies (none required, but just in case)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Logs & temp
+*.log
+*.tmp
+.cache/
+dist/
+build/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local progress exports / scratch
+netsec-academy-progress-*.json
+*-network.json
+chrome-prof*/
